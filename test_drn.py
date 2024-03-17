@@ -1,16 +1,17 @@
+import os
 import tensorflow as tf
 import numpy as np
 import cv2
 import math
-from model_drn import DRN
+from model_drn import DRN  
 
 def save_img(image, path):
-    # Convert and save the image as a PNG file
+    # Convertir y guardar la imagen como un archivo PNG
     image = tf.math.multiply(image, 255.)
     image = tf.cast(tf.clip_by_value(image, 0, 255), tf.uint8)
     image = tf.image.encode_png(image, 3)
     tf.io.write_file(path, image)
-    return 'Done!'
+    return '¡Hecho!'
 
 def calculate_psnr(target, ref):
     target_data = tf.image.convert_image_dtype(target, dtype=tf.float32)
@@ -21,7 +22,6 @@ def calculate_psnr(target, ref):
 
     return psnr.numpy()
 
-
 def calculate_ssim(target, ref):
     target_data = tf.image.convert_image_dtype(target, dtype=tf.float32)
     ref_data = tf.image.convert_image_dtype(ref, dtype=tf.float32)
@@ -30,20 +30,20 @@ def calculate_ssim(target, ref):
     return ssim_value.numpy()
 
 def calculate_epi(original, restored):
-    # Laplacian filter
+    # Filtro Laplaciano
     H = np.array([[0, -1, 0],
                   [-1, 4, -1],
                   [0, -1, 0]])
 
-    # Highpass filter the input and restored images
+    # Filtrar paso alto las imágenes de entrada y restauradas
     deltas = cv2.filter2D(original.numpy(), -1, H)
     deltascap = cv2.filter2D(restored.numpy(), -1, H)
 
-    # Calculate mean values
+    # Calcular valores medios
     meandeltas = np.mean(deltas)
     meandeltascap = np.mean(deltascap)
 
-    # Compute EPI
+    # Calcular EPI
     p1 = deltas - meandeltas
     p2 = deltascap - meandeltascap
     num = np.sum(p1 * p2)
@@ -63,80 +63,80 @@ def Inference(weights_path, scale=4):
     def inference(lr_path, sr_path, hr_path, sr_model=sr_model):
         nonlocal psnr_sum, ssim_sum, epi_sum
 
-        # Read the LR image
+        # Leer la imagen LR
         image = tf.io.read_file(lr_path)
         image = tf.io.decode_image(image, 3, expand_animations=False)
 
-        # Get the size of the HR image
+        # Obtener el tamaño de la imagen HR
         hr_size = tf.io.read_file(hr_path)
         hr_size = tf.io.decode_image(hr_size, 3, expand_animations=False)
         hr_size = tf.shape(hr_size)[:2]
 
-        # Expand dimensions, normalize, and predict with the SR model
+        # Expandir dimensiones, normalizar y predecir con el modelo SR
         image = tf.expand_dims(image, axis=0)
         image = tf.math.divide(tf.cast(image, tf.float32), 255.)
         sr_image = sr_model.predict(image)[0]
 
-        # Resize the SR image to HR size (optional)
+        # Redimensionar la imagen SR al tamaño HR (opcional)
         image = tf.image.resize(sr_image, hr_size, method=tf.image.ResizeMethod.BICUBIC)
 
-        # Save the SR image
+        # Guardar la imagen SR
         save_img(image, sr_path)
 
-        # Read the HR image
+        # Leer la imagen HR
         hr_image = tf.io.read_file(hr_path)
         hr_image = tf.io.decode_image(hr_image, 3, expand_animations=False)
         hr_image = tf.cast(hr_image, tf.float32) / 255.0
 
-        # Calculate metrics
+        # Calcular métricas
         psnr_value = calculate_psnr(image, hr_image)
         ssim_value = calculate_ssim(image, hr_image)
         epi_value = calculate_epi(hr_image, image)
 
 
-        print(f'Image: {lr_path}')
+        print(f'Imagen: {lr_path}')
         print(f'PSNR: {psnr_value:.2f} dB')
         print(f'SSIM: {ssim_value:.4f}')
         print(f'EPI: {epi_value:.4f}')
 
-        # Accumulate values
+        # Acumular valores
         psnr_sum += psnr_value
         ssim_sum += ssim_value
         epi_sum += epi_value
 
     def get_averages():
-        num_images = 20  # Adjust this based on the total number of images
+        num_images = 20  # Ajustar según el número total de imágenes
         avg_psnr = psnr_sum / num_images
         avg_ssim = ssim_sum / num_images
         avg_epi = epi_sum / num_images
 
-        print(f'\nAverage PSNR: {avg_psnr:.2f} dB')
-        print(f'Average SSIM: {avg_ssim:.4f}')
-        print(f'Average EPI: {avg_epi:.4f}')
+        print(f'\nPSNR Promedio: {avg_psnr:.2f} dB')
+        print(f'SSIM Promedio: {avg_ssim:.4f}')
+        print(f'EPI Promedio: {avg_epi:.4f}')
 
     return inference, get_averages
 
-# Specify the path to the pre-trained weights
-weights_path = 'models/DRN_SS/weight-400-0.0255.h5'
+# Especificar la ruta a los pesos pre-entrenados
+weights_path = os.path.join(os.getcwd(), 'models_drn', 'DRN_S', 'weight-400-0.0255.h5') #modificar el nombre del archivo h5
 scale = 4
 
-# Create an inference function with the specified weights and scale
+# Crear una función de inferencia con los pesos y la escala especificados
 inference, get_averages = Inference(weights_path, scale)
 
-# Paths for LR, SR, and HR images
-path_test = './Redes_OLI2/test_OLI/test_lr_png/'
-path_output = './Redes_OLI2/output/'
-path_reference = './Redes_OLI2/test_OLI/test_hr_png/'
+# Rutas para imágenes LR, SR y HR
+path_test = os.path.join(os.getcwd(), 'test_OLI', 'test_lr_png')
+path_output = os.path.join(os.getcwd(), 'output_drn')
+path_reference = os.path.join(os.getcwd(),'test_OLI', 'test_hr_png')
 
-# Iterate through images and perform inference
+# Iterar a través de las imágenes y realizar inferencias
 for i in range(1, 21):
     name = 'zh' + str(i) + '_RGB.png'
-    lr_path = path_test + name
-    sr_path = path_output + name
-    hr_path = path_reference + name
+    lr_path = os.path.join(path_test, name)
+    sr_path = os.path.join(path_output, name)
+    hr_path = os.path.join(path_reference, name)
     
-    # Perform inference and save the SR image
+    # Realizar inferencias y guardar la imagen SR
     inference(lr_path, sr_path, hr_path)
 
-# Calculate and print average values
+# Calcular e imprimir valores promedio
 get_averages()
