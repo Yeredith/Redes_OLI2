@@ -9,7 +9,7 @@ import math
 import tensorflow as tf
 
 data_path = os.path.join(os.getcwd(), 'train_OLI','train_hr_png')
-input_size = 32
+input_size = 64
 channel = 3
 scale = 4
 dual = True #indicador booleano que determina si se utiliza el modelo dual durante el entrenamiento.
@@ -52,7 +52,7 @@ if not os.path.exists(model_path):
     os.mkdir(model_path)
 
     
-checkpoint = ModelCheckpoint(os.path.join(model_path, model_name),save_freq=20,save_best_only=False,save_weights_only=True)
+checkpoint = ModelCheckpoint(os.path.join(model_path, model_name), period=20,save_best_only=False,save_weights_only=True)
 lrscheduler = LearningRateScheduler(CosineAnnealingScheduler())
 opt = Adam(1e-3)
 if dual:
