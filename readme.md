@@ -25,10 +25,10 @@ Asegúrate de tener Python instalado en tu sistema. También es recomendable uti
 2. **Ejecución del entrenamiento**: Una vez que todo esté configurado correctamente, puedes ejecutar el script de entrenamiento con el siguiente comando:
 
     ```bash
-    python entrenamiento.py
+    python entrenamiento_drn.py
     ```
 
-    Asegúrate de que el archivo `entrenamiento.py` esté presente en tu directorio de trabajo y contenga el código necesario para el entrenamiento del modelo.
+    Asegúrate de que el archivo `entrenamiento_drn.py` esté presente en tu directorio de trabajo y contenga el código necesario para el entrenamiento del modelo.
 
 ### Test
 
@@ -37,10 +37,10 @@ Asegúrate de tener Python instalado en tu sistema. También es recomendable uti
 2. **Ejecución del test**: Utiliza el siguiente comando para ejecutar el script de test:
 
     ```bash
-    python test.py
+    python test_drn.py
     ```
 
-    Asegúrate de que el archivo `test.py` esté presente en tu directorio de trabajo y contenga el código necesario para el test del modelo.
+    Asegúrate de que el archivo `test_drn.py` esté presente en tu directorio de trabajo y contenga el código necesario para el test del modelo.
 
 ---
 
