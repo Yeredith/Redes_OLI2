@@ -104,8 +104,7 @@ def Inference(weights_path, scale=4):
         ssim_sum += ssim_value
         epi_sum += epi_value
 
-    def get_averages():
-        num_images = 20  # Ajustar según el número total de imágenes
+    def get_averages(num_images):
         avg_psnr = psnr_sum / num_images
         avg_ssim = ssim_sum / num_images
         avg_epi = epi_sum / num_images
@@ -120,6 +119,8 @@ def Inference(weights_path, scale=4):
             f.write(f'PSNR Promedio: {avg_psnr:.2f} dB\n')
             f.write(f'SSIM Promedio: {avg_ssim:.4f}\n')
             f.write(f'EPI Promedio: {avg_epi:.4f}\n')
+
+        return inference, avg_psnr, avg_ssim, avg_epi
 
     return inference, get_averages
 
@@ -139,9 +140,9 @@ inference, get_averages = Inference(weights_path, scale)
 path_test_RGB = os.path.join(os.getcwd(), 'test','RGB_x4','data')
 path_output_RGB = os.path.join(os.getcwd(), 'output_drn','RGB')
 path_reference_RGB = os.path.join(os.getcwd(),'test','RGB_x4','reference')
-
+num_images_RGB = len(os.listdir(path_reference_RGB))
 # Iterar a través de las imágenes y realizar inferencias
-for i in range(1, 21):
+for i in range(1, num_images_RGB+1):
     name = 'zh' + str(i) + '_RGB.png'
     lr_path = os.path.join(path_test_RGB, name)
     sr_path = os.path.join(path_output_RGB, name)
@@ -151,16 +152,16 @@ for i in range(1, 21):
     inference(lr_path, sr_path, hr_path)
 
 # Calcular e imprimir valores promedio
-get_averages()
+get_averages(num_images_RGB)
 
 
 #Imagenes Zurich B4
 path_test_B4 = os.path.join(os.getcwd(), 'test','B4_x4','data')
 path_output_B4 = os.path.join(os.getcwd(), 'output_drn','B4')
 path_reference_B4 = os.path.join(os.getcwd(),'test','B4_x4','reference')
-
+num_images_B4 = len(os.listdir(path_reference_B4))
 # Iterar a través de las imágenes y realizar inferencias
-for i in range(1, 21):
+for i in range(1, num_images_B4+1):
     name = 'zh' + str(i) + '_B4.png'
     lr_path = os.path.join(path_test_B4, name)
     sr_path = os.path.join(path_output_B4, name)
@@ -170,4 +171,4 @@ for i in range(1, 21):
     inference(lr_path, sr_path, hr_path)
 
 # Calcular e imprimir valores promedio
-get_averages()
+get_averages(num_images_B4)
