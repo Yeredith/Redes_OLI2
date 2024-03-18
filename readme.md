@@ -42,7 +42,12 @@ Asegúrate de tener Python instalado en tu sistema. También es recomendable uti
 
     Asegúrate de que el archivo `test_drn.py` esté presente en tu directorio de trabajo y contenga el código necesario para el test del modelo.
 
+### Base de datos
+1. **Datos de entrenamiento**: La base de datos para entrenamiento del archivo `train_drn.py` es OLI2MSI encontrada en la carpeta `train_OLI`.
+2. **Datos de Prueba**: El archivo `test_drn.py` esta configurada para probar la base de datos de Zurich encontrada en la carpeta `Test`, sin embargo tambien se encuentra la base de datos para entrenamiento de OLI2MSI en la carpeta `test_OLI`.
 ---
+
+
 
 Antes de ejecutar revisa que tengas todos los archivos necesarios y los requisitos instalados.
 
