@@ -47,7 +47,7 @@ def dual_loss(y_true, y_pred):
 
 # Model checkpoint setup
 model_path = os.path.join(os.getcwd(), 'models_drn','DRN_S')
-model_name = "weight-{epoch:03d}-{loss:.4f}.h5"
+model_name = "weight-{epoch:03d}.h5"
 if not os.path.exists(model_path):
     os.mkdir(model_path)
 

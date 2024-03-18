@@ -114,26 +114,57 @@ def Inference(weights_path, scale=4):
         print(f'SSIM Promedio: {avg_ssim:.4f}')
         print(f'EPI Promedio: {avg_epi:.4f}')
 
+        # Guardar los resultados en un archivo de texto
+        with open('resultados.txt', 'a') as f:
+            f.write('\nResultados Promedio:\n')
+            f.write(f'PSNR Promedio: {avg_psnr:.2f} dB\n')
+            f.write(f'SSIM Promedio: {avg_ssim:.4f}\n')
+            f.write(f'EPI Promedio: {avg_epi:.4f}\n')
+
     return inference, get_averages
 
 # Especificar la ruta a los pesos pre-entrenados
-weights_path = os.path.join(os.getcwd(), 'models_drn', 'DRN_S', 'weight-400-0.0255.h5') #modificar el nombre del archivo h5
+weights_path = os.path.join(os.getcwd(), 'models_drn', 'DRN_S', 'weight-400.h5') #modificar el nombre del archivo h5
 scale = 4
 
 # Crear una función de inferencia con los pesos y la escala especificados
 inference, get_averages = Inference(weights_path, scale)
 
 # Rutas para imágenes LR, SR y HR
-path_test = os.path.join(os.getcwd(), 'test_OLI', 'test_lr_png')
-path_output = os.path.join(os.getcwd(), 'output_drn')
-path_reference = os.path.join(os.getcwd(),'test_OLI', 'test_hr_png')
+#path_test = os.path.join(os.getcwd(), 'test_OLI', 'test_lr_png')
+#path_output = os.path.join(os.getcwd(), 'output_drn')
+#path_reference = os.path.join(os.getcwd(),'test_OLI', 'test_hr_png')
+
+#Imagenes Zurich RGB
+path_test_RGB = os.path.join(os.getcwd(), 'test','RGB_x4','data')
+path_output_RGB = os.path.join(os.getcwd(), 'output_drn','RGB')
+path_reference_RGB = os.path.join(os.getcwd(),'test','RGB_x4','reference')
 
 # Iterar a través de las imágenes y realizar inferencias
 for i in range(1, 21):
     name = 'zh' + str(i) + '_RGB.png'
-    lr_path = os.path.join(path_test, name)
-    sr_path = os.path.join(path_output, name)
-    hr_path = os.path.join(path_reference, name)
+    lr_path = os.path.join(path_test_RGB, name)
+    sr_path = os.path.join(path_output_RGB, name)
+    hr_path = os.path.join(path_reference_RGB, name)
+    
+    # Realizar inferencias y guardar la imagen SR
+    inference(lr_path, sr_path, hr_path)
+
+# Calcular e imprimir valores promedio
+get_averages()
+
+
+#Imagenes Zurich B4
+path_test_B4 = os.path.join(os.getcwd(), 'test','B4_x4','data')
+path_output_B4 = os.path.join(os.getcwd(), 'output_drn','B4')
+path_reference_B4 = os.path.join(os.getcwd(),'test','B4_x4','reference')
+
+# Iterar a través de las imágenes y realizar inferencias
+for i in range(1, 21):
+    name = 'zh' + str(i) + '_B4.png'
+    lr_path = os.path.join(path_test_B4, name)
+    sr_path = os.path.join(path_output_B4, name)
+    hr_path = os.path.join(path_reference_B4, name)
     
     # Realizar inferencias y guardar la imagen SR
     inference(lr_path, sr_path, hr_path)
