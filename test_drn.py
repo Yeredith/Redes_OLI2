@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import cv2
 import math
-from model_drn import DRN  
+from Utils.model_drn import DRN  
 
 def save_img(image, path):
     # Convertir y guardar la imagen como un archivo PNG
