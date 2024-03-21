@@ -9,7 +9,7 @@ import math
 import tensorflow as tf
 
 data_path = os.path.join(os.getcwd(), 'train_OLI','train_hr_png')
-input_size = 64
+input_size = 32
 channel = 3
 scale = 4
 dual = True #indicador booleano que determina si se utiliza el modelo dual durante el entrenamiento.
@@ -23,7 +23,7 @@ dataset = dataset.cache()
 dataset = dataset.map(lambda x,y: data_patch(x,y,scale,input_shape),tf.data.experimental.AUTOTUNE)
 dataset = dataset.map(data_augment,tf.data.experimental.AUTOTUNE)
 dataset = dataset.map(data_normalize,tf.data.experimental.AUTOTUNE)
-dataset = dataset.batch(4).prefetch(tf.data.experimental.AUTOTUNE)
+dataset = dataset.batch(16).prefetch(tf.data.experimental.AUTOTUNE)
 
 model = DRN(input_shape=input_shape,model='DRN-S',scale=scale,dual=dual)
 
