@@ -23,7 +23,7 @@ dataset = dataset.cache()
 dataset = dataset.map(lambda x,y: data_patch(x,y,scale,input_shape),tf.data.experimental.AUTOTUNE)
 dataset = dataset.map(data_augment,tf.data.experimental.AUTOTUNE)
 dataset = dataset.map(data_normalize,tf.data.experimental.AUTOTUNE)
-dataset = dataset.batch(16).prefetch(tf.data.experimental.AUTOTUNE)
+dataset = dataset.batch(4).prefetch(tf.data.experimental.AUTOTUNE)
 
 model = DRN(input_shape=input_shape,model='DRN-S',scale=scale,dual=dual)
 
