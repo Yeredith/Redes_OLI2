@@ -1,0 +1,5 @@
+
+Resultados Promedio:
+PSNR Promedio: 22.31 dB
+SSIM Promedio: 0.6833
+EPI Promedio: 0.1969

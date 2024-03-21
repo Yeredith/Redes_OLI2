@@ -9,7 +9,7 @@ import math
 import tensorflow as tf
 
 data_path = os.path.join(os.getcwd(), 'train_OLI','train_hr_png')
-input_size = 64
+input_size = 32
 channel = 3
 scale = 4
 dual = True #indicador booleano que determina si se utiliza el modelo dual durante el entrenamiento.
