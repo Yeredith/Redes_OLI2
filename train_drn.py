@@ -52,7 +52,7 @@ if not os.path.exists(model_path):
     os.mkdir(model_path)
 
     
-checkpoint = ModelCheckpoint(os.path.join(model_path, model_name), period=20,save_best_only=False,save_weights_only=True)
+checkpoint = ModelCheckpoint(os.path.join(model_path, model_name), period=10,save_best_only=False,save_weights_only=True)
 lrscheduler = LearningRateScheduler(CosineAnnealingScheduler())
 opt = Adam(1e-3)
 if dual:
@@ -69,3 +69,5 @@ plt.xlabel('Epocas')
 plt.ylabel('Perdida')
 plt.legend()
 plt.show()
+# Guardar la gráfica en un archivo PNG
+plt.savefig('loss_DRN.png')
